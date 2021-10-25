@@ -122,7 +122,7 @@ void c2tc(char *file_in, char *file_out)
 
     if(!dinlen)
     {
-        printf("Could not open/read file.");
+        printf("Could not open/read file.\n");
         return;
     }
 
@@ -134,6 +134,11 @@ void c2tc(char *file_in, char *file_out)
     }
     // count lines => store in array
     int *nl = malloc(nlcount * sizeof(int));
+    if(!nl)
+    {
+        printf("Failed to malloc.\n");
+        return;
+    }
     for(int i = 0; i < nlcount; i++) nl[i] = 0;
     nlcount = 1;
     for(size_t i = 0; i < dinlen; i++)
@@ -181,6 +186,7 @@ void c2tc(char *file_in, char *file_out)
         }
     }
     if(result) file_write(file_out, dout, doutlen);
+    free(nl);
 }
 
 int main(int argc, char **argv)
