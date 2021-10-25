@@ -21,7 +21,7 @@ typedef enum
 }
 Cmd;
 
-#define OS_TYPE OS_WINDOWS
+#define OS_TYPE OS_WINDOWS  // DEFINE YOUR OS HERE :)
 
 void error_args(char **argv, int i, int j, char *msg)
 {
@@ -94,6 +94,8 @@ int isnewline(char *c, size_t i, size_t len)
             if(c[i] == '\n') return 1;
             break;
         case OS_MAC:
+            if(c[i] == '\r') return 1;
+            if(c[i] == '\n') return 1;
             break;
         default:
             break;
@@ -147,29 +149,29 @@ void c2tc(char *file_in, char *file_out)
         if(len > longest) longest = len;
     }
     // append
+    bool result = true;
     for(int x = 0; x < longest; x++)
     {
         int pending = 0;    // pending spaces to be added
         for(int y = 0; y < nlcount; y++)
         {
             char c = getcxy(din, dinlen, nl, nlcount, x, y);
-            // printf("%c,", c);
             if(!c || c == '\t' || c == ' ') pending++;
             else
             {
                 for(int k = 0; k < pending; k++)
                 {
-                    append(&dout, &doutlen, ' ', 64);
+                    result &= append(&dout, &doutlen, ' ', 64);
                 }
                 pending = 0;
-                append(&dout, &doutlen, c, 64);
+                result &= append(&dout, &doutlen, c, 64);
             }
         }
         // append newline
-        append(&dout, &doutlen, '\r', 64);
-        append(&dout, &doutlen, '\n', 64);
+        result &= append(&dout, &doutlen, '\r', 64);
+        result &= append(&dout, &doutlen, '\n', 64);
     }
-    file_write(file_out, dout, doutlen);
+    if(result) file_write(file_out, dout, doutlen);
 }
 
 int main(int argc, char **argv)
@@ -188,13 +190,11 @@ int main(int argc, char **argv)
     for(int i = 1; i < argc; i++)
     {
         // check commands
-        // printf("%s\n", argv[i]);
         if(cmd) file_out = argv[i];
         else if(file_in)
         {
             if(!strcmp(argv[i], "-c")) cmd = CMD_TC2C;
             else if(!strcmp(argv[i], "-t")) cmd = CMD_C2TC;
-            // else if(!strcmp(argv[i], "-o")) cmd = CMD_C2TC;
             else 
             {
                 error_args(argv, i, 1, "wrong command.");
