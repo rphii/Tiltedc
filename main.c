@@ -168,8 +168,17 @@ void c2tc(char *file_in, char *file_out)
             }
         }
         // append newline
-        result &= append(&dout, &doutlen, '\r', 64);
-        result &= append(&dout, &doutlen, '\n', 64);
+        switch(OS_TYPE)
+        {
+            case OS_WINDOWS:
+                result &= append(&dout, &doutlen, '\r', 64);
+            case OS_LINUX:
+            case OS_MAC:
+                result &= append(&dout, &doutlen, '\n', 64);
+                break;
+            default:
+                break;
+        }
     }
     if(result) file_write(file_out, dout, doutlen);
 }
