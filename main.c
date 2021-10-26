@@ -187,12 +187,11 @@ void c2tc(char *file_in, char *file_out)
     }
     if(result) file_write(file_out, dout, doutlen);
     free(nl);
+    free(din);
 }
 
 int main(int argc, char **argv)
 {
-    if(argc == 1) c2tc("dump", "dump.tc");
-
     Cmd cmd = CMD_NONE;
     char *file_in = 0;
     char *file_out = 0;
