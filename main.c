@@ -43,7 +43,7 @@ size_t file_read(char *filename, char **dump)
     fseek(file, 0, SEEK_SET);
 
     // allocate memory
-    if(!(*dump = realloc(*dump, bytes_file))) return 0;
+    if(!(*dump = realloc(*dump, bytes_file + 1))) return 0;
 
     // read file
     size_t bytes_read = fread(*dump, 1, bytes_file, file);
